@@ -2,53 +2,27 @@
 
 <html>
 <head>
+    <title>SIDOLA COMPUTER CENTER</title>
 </head>
+<body>
+	
 
-<body onLoad="buildHtmlTable('#excelDataTable')">
-	<script>
-		var laptop={{.json}}
+<nav class="navigation">
 
-		function buildHtmlTable(selector) {
-			var columns = addAllColumnHeaders(laptop, selector);
+	<ul>
 
-			for (var i = 0; i < laptop.length; i++) {
-				var row$ = $('<tr/>');
-				for (var colIndex = 0; colIndex < columns.length; colIndex++) {
-					var cellValue = laptop[i][columns[colIndex]];
-					if (cellValue == null) cellValue = "";
-					row$.append($('<td/>').html(cellValue));
-				}
-				$(selector).append(row$);
-			}
-		}
-		function addAllColumnHeaders(laptop, selector) {
-			var columnSet = [];
-			var headerTr$ = $('<tr/>');
+		<li><a href="#"><span>Home</span></a></li>
 
-			for (var i = 0; i < laptop.length; i++) {
-				var rowHash = laptop[i];
-				for (var key in rowHash) {
-					if ($.inArray(key, columnSet) == -1) {
-						columnSet.push(key);
-						headerTr$.append($('<th/>').html(key));
-					}
-				}
-			}
-			$(selector).append(headerTr$);
+		<li><a href="laptop"><span>Laptop</span></a></li>
 
-			return columnSet;
-		}
+		<li><a href="server"><span>Server</span></a></li>
+
+		<li class="account"><a href="#"><span>Akun</span></a></li>
+
+	</ul>
+
+</nav>
 
 
-
-		window['CboxReady'] = function (Cbox) {
-			Cbox('button', '7-849074-dqM8Oh');
-		}
-	</script>
-	<script src="https://static.cbox.ws/embed/1.js" async></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-	<table id="excelDataTable" border="1">
-	</table>
 </body>
 </html>

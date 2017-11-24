@@ -13,7 +13,15 @@ type MainController struct {
 	beego.Controller
 }
 
+type LaptopController struct {
+	beego.Controller
+}
+
 func (c *MainController) Get() {
+	c.TplName = "index.tpl"
+}
+
+func (c *LaptopController) Get() {
 	l:=models.Tlaptop{}
 	dlaptop:=models.Dlaptop{}
 
@@ -44,5 +52,5 @@ func (c *MainController) Get() {
 	fmt.Println()
 	c.Data["json"]=&dlaptop
 	//c.ServeJSON()
-	c.TplName = "index.tpl"
+	c.TplName = "laptop.tpl"
 }
