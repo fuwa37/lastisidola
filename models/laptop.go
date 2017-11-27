@@ -2,7 +2,7 @@ package models
 
 type Tlaptop struct {
 	Merk string `json:"Merk"`
-	Jenis string `json:"Jenis"`
+	Tipe string `json:"Tipe"`
 	Desc string `json:"Deskripsi"`
 	Img string `json:"Gambar"`
 }

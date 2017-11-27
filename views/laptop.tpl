@@ -2,86 +2,76 @@
 
 <html>
 <head>
-    <title>SIDOLA COMPUTER CENTER</title>
-    <style>
-    table, th, td 
-    {
-      margin:10px 0;
-      border:solid 1px #333;
-      padding:2px 4px;
-      font:15px Verdana;
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIDOLA COMPUTER CENTER</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <style>
+  table, th, td 
+  {
+    margin:10px 0;
+    border:solid 1px #333;
+    padding:2px 4px;
+    font:15px Verdana;
   }
   th {
-      font-weight:bold;
+    font-weight:bold;
   }
 </style>
 </head>
 
-<body onLoad=CreateTableFromJSON()>
-    <nav class="navigation">
+<body onLoad="buildHtmlTable('#excelDataTable')">
+  <nav class="navigation">
 
-       <ul>
+   <ul>
 
-          <li><a href="home"><span>Home</span></a></li>
+    <a href="home"><span>Home</span></a>
 
-          <li><a href="#"><span>Laptop</span></a></li>
+    <a href="#"><span>Laptop</span></a>
 
-          <li><a href="server"><span>Server</span></a></li>
 
-          <li class="account"><a href="#"><span>Akun</span></a></li>
+    <a href="server"><span>Server</span></a>
 
-      </ul>
+  </ul>
 
-  </nav>
-  <div id="showData"></div>
-  <script>
-      function CreateTableFromJSON() {
-         var laptop={{.json}}
+</nav>
+<table id="excelDataTable" border="1">
+</table>
 
-        // EXTRACT VALUE FOR HTML HEADER. 
-        // ('Book ID', 'Book Name', 'Category' and 'Price')
-        var col = [];
-        for (var i = 0; i < laptop.length; i++) {
-        	for (var key in laptop[i]) {
-        		if (col.indexOf(key) === -1) {
-        			col.push(key);
-        		}
-        	}
-        }
+<script>
+  var myList = {{.json}}
 
-        // CREATE DYNAMIC TABLE.
-        var table = document.createElement("table");
+  function buildHtmlTable(selector) {
+    var columns = addAllColumnHeaders(myList, selector);
 
-        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
-        var tr = table.insertRow(-1);                   // TABLE ROW.
-
-        for (var i = 0; i < col.length; i++) {
-            var th = document.createElement("th");      // TABLE HEADER.
-            th.innerHTML = col[i];
-            tr.appendChild(th);
-        }
-
-        // ADD JSON DATA TO THE TABLE AS ROWS.
-        for (var i = 0; i < laptop.length; i++) {
-
-        	tr = table.insertRow(-1);
-
-        	for (var j = 0; j < col.length; j++) {
-        		var tabCell = tr.insertCell(-1);
-        		tabCell.innerHTML = laptop[i][col[j]];
-        	}
-        }
-
-        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-        var divContainer = document.getElementById("showData");
-        divContainer.innerHTML = "";
-        divContainer.appendChild(table);
+    for (var i = 0; i < myList.length; i++) {
+      var row$ = $('<tr/>');
+      for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+        var cellValue = myList[i][columns[colIndex]];
+        if (cellValue == null) cellValue = "";
+        row$.append($('<td/>').html(cellValue));
+      }
+      $(selector).append(row$);
     }
-    window['CboxReady'] = function (Cbox) {
-    	Cbox('button', '7-849074-dqM8Oh');
+  }
+  function addAllColumnHeaders(myList, selector) {
+    var columnSet = [];
+    var headerTr$ = $('<tr/>');
+
+    for (var i = 0; i < myList.length; i++) {
+      var rowHash = myList[i];
+      for (var key in rowHash) {
+        if ($.inArray(key, columnSet) == -1) {
+          columnSet.push(key);
+          headerTr$.append($('<th/>').html(key));
+        }
+      }
     }
+    $(selector).append(headerTr$);
+
+    return columnSet;
+  }
 </script>
-<script src="https://static.cbox.ws/embed/1.js" async></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </body>
 </html>
