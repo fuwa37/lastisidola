@@ -24,7 +24,7 @@
     <a href="/katalog" class="btn btn-default" role="button">Katalog</a>
 	<a href="/tanya" class="btn btn-default" role="button">Tanya Barang</a>
 	<a href="/form" class="btn btn-default" role="button">Form Beli</a>
-	<a href="/cart" class="btn btn-default" role="button">Purchase</a>
+	<a href="/cart" class="btn btn-default" role="button">Purchased</a>
 	<a href="/chat" class="btn btn-default" role="button">Chat</a>
 	<a href="/faq" class="btn btn-default" role="button">FAQ</a>
   </div>
