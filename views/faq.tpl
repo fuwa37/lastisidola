@@ -16,23 +16,10 @@
 <body>
 <nav class="navigation">
 
-  <ul>
+	<ul>
 		<a href="home"><span>Home</span></a>
 	</ul>
-<div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-  <div class="btn-group" role="group">
-    <a href="/katalog" class="btn btn-default" role="button">Katalog</a>
-	<a href="/tanya" class="btn btn-default" role="button">Tanya Barang</a>
-	<a href="/form" class="btn btn-default" role="button">Form Beli</a>
-	<a href="/cart" class="btn btn-default" role="button">Purchase</a>
-	<a href="/chat" class="btn btn-default" role="button">Chat</a>
-	<a href="/faq" class="btn btn-default" role="button">FAQ</a>
-  </div>
-</div>
-</ul>
 
 </nav>
-<script src="js/jquery-1.11.3.min.js"></script>
-<script src="js/bootstrap.js"></script>
 </body>
 </html>

@@ -13,6 +13,10 @@ type MainController struct {
 	beego.Controller
 }
 
+type HomeController struct {
+	beego.Controller
+}
+
 type LaptopController struct {
 	beego.Controller
 }
@@ -25,8 +29,61 @@ type LoginController struct {
 	beego.Controller
 }
 
+type ChatController struct {
+	beego.Controller
+}
+
+type CatController struct {
+	beego.Controller
+}
+
+type FAQController struct {
+	beego.Controller
+}
+
+type FormController struct {
+	beego.Controller
+}
+
+type TanyaController struct {
+	beego.Controller
+}
+
+type CartController struct {
+	beego.Controller
+}
+
 func (c *MainController) Get() {
 	c.TplName = "index.tpl"
+}
+
+
+func (c *FAQController) Get() {
+	c.TplName = "faq.tpl"
+}
+
+func (c *FormController) Get() {
+	c.TplName = "form.tpl"
+}
+
+func (c *TanyaController) Get() {
+	c.TplName = "tanya.tpl"
+}
+
+func (c *CartController) Get() {
+	c.TplName = "cart.tpl"
+}
+
+func (c *ChatController) Get() {
+	c.TplName = "chat.tpl"
+}
+
+func (c *HomeController) Get() {
+	c.TplName = "home.tpl"
+}
+
+func (c *CatController) Get() {
+	c.TplName = "katalog.tpl"
 }
 
 func (c *RegController) Get () {
@@ -45,13 +102,13 @@ func (c *RegController) Post () {
 	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("INSERT akun SET user=?,email=?,pass=?")
+	stmt, err := db.Prepare("INSERT akun SET user=?,email=?,tlp=?,pass=?")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(c.GetString("name"),c.GetString("email"),c.GetString("password"))
+	_, err = stmt.Exec(c.GetString("name"),c.GetString("email"),c.GetString("telepon"), c.GetString("password"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,14 +154,14 @@ func (c *LaptopController) Get() {
 	}
 	defer db.Close()
 	
-	rows, err:=db.Query("select merk, tipe, deskripsi, gambar from katalog where jenis='Laptop'")
+	rows, err:=db.Query("select id, merk, tipe, deskripsi, gambar from katalog where jenis='Laptop'")
 	
 	if err !=nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 	for rows.Next(){
-		err:=rows.Scan(&l.Merk,&l.Tipe,&l.Desc,&l.Img)
+		err:=rows.Scan(&l.ID,&l.Merk,&l.Tipe,&l.Desc,&l.Img)
 		if err !=nil {
 			log.Fatal(err)
 		}
