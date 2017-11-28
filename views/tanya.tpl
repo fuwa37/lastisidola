@@ -21,5 +21,17 @@
 	</ul>
 
 </nav>
+
+<form method="post" action="" id="tanya">
+    <div class="form-group">
+        <label for="ID">ID Barang</label>
+        <input type="ID" name="ID" class="form-control" id="ID" placeholder="">
+    </div>
+    <div class="form-group">
+        <label for="qty">Quantity</label>
+        <input type="qty" name="qty" class="form-control" id="qty" placeholder="">
+    </div>
+    <button type="submit" class="btn btn-default">Tanya</button>
+</form>
 </body>
 </html>

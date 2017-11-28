@@ -1,12 +1,14 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-	"lasti/models"
-	"fmt"
-	"log"
-	_ "github.com/go-sql-driver/mysql"
-	"database/sql"
+"github.com/astaxie/beego"
+"lasti/models"
+"fmt"
+"log"
+_ "github.com/go-sql-driver/mysql"
+//"github.com/astaxie/beego/session"
+"database/sql"
+"time"
 )
 
 type MainController struct {
@@ -53,21 +55,138 @@ type CartController struct {
 	beego.Controller
 }
 
+type InvController struct {
+	beego.Controller
+}
+
 func (c *MainController) Get() {
 	c.TplName = "index.tpl"
 }
 
+func (c *InvController) Get() {
+	c.TplName = "invoice.tpl"
+}
 
 func (c *FAQController) Get() {
 	c.TplName = "faq.tpl"
 }
 
+func (c *FormController) Prepare() {
+	session := c.StartSession()
+	userID := session.Get("userID")
+	if userID != nil {
+		} else {
+			c.Redirect("/login",302)
+		}
+}
+
 func (c *FormController) Get() {
-	c.TplName = "form.tpl"
+	var(
+		id string
+		qty int
+		sum int
+		t time.Time
+		)
+	session := c.StartSession()
+	userID := session.Get("userID")
+	if userID != nil {
+		// User is logged in already, display another page
+		db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+
+	//log.Println(userID)
+		err = db.QueryRow("select ID_barang,qty,harga,tgl_klr from form where ID_user=? and status=?", userID,"harga").Scan(&id,&qty,&sum,&t)
+
+	//log.Println(id)
+		c.Data["ID"]=&id
+		c.Data["qty"]=&qty
+		c.Data["harga"]=&sum
+		c.TplName = "form.tpl"
+
+	}
+}
+
+func (c *FormController) Post() {
+	session := c.StartSession()
+	userID := session.Get("userID")
+	if userID != nil {
+		db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+
+		stmt, err := db.Prepare("update form set status=? where ID_user=? and status<>?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec("beli",userID,"beli")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		c.TplName = "berhasil.tpl"
+		// User is logged in already, display another page
+		
+	}
+}
+
+func (c *TanyaController) Prepare() {
+	session := c.StartSession()
+	userID := session.Get("userID")
+	if userID != nil {
+		} else {
+			c.Redirect("/login",302)
+		}
 }
 
 func (c *TanyaController) Get() {
-	c.TplName = "tanya.tpl"
+	session := c.StartSession()
+	userID := session.Get("userID")
+	if userID != nil {
+		c.TplName = "tanya.tpl"
+		// User is logged in already, display another page
+		
+	}
+}
+
+func (c *TanyaController) Post() {
+	session := c.StartSession()
+	userID := session.Get("userID")
+	if userID != nil {
+		a:=models.Tuser{}
+		//log.Println(c.GetString("name"))
+		if err := c.ParseForm(&a); err != nil {
+		}
+
+		db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+
+		stmt, err := db.Prepare("INSERT form SET ID_barang=?,ID_user=?,qty=?,tgl_msk=?,status=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt.Close()
+		t:=time.Now().Format("2006-01-02 15:04:05")
+
+		_, err = stmt.Exec(c.GetString("ID"),userID,c.GetString("qty"),t,"tanya")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		c.TplName = "berhasil.tpl"
+		// User is logged in already, display another page
+		
+	}
+	
 }
 
 func (c *CartController) Get() {
@@ -94,9 +213,9 @@ func (c *RegController) Post () {
 	a:=models.Tuser{}
 	//log.Println(c.GetString("name"))
 	if err := c.ParseForm(&a); err != nil {
-    }
-    
-    db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola")
+	}
+
+	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -113,7 +232,7 @@ func (c *RegController) Post () {
 		log.Fatal(err)
 	}
 
-    c.TplName ="index.tpl"
+	c.Redirect("/home",302)
 }
 
 func (c *LoginController) Get () {
@@ -126,21 +245,35 @@ func (c *LoginController) Post () {
 	a:=models.Tuser{}
 	//log.Println(c.GetString("name"))
 	if err := c.ParseForm(&a); err != nil {
-    }
-    
-    db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola")
+	}
+
+	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	err = db.QueryRow("SELECT EXISTS(select * from akun where email=? and pass=?)", c.GetString("email"),c.GetString("password")).Scan(&i)
-	log.Println(i)
-	if (i==1){
-		c.TplName ="home.tpl"
-		} else {
-			c.TplName="reg.tpl"
+	err = db.QueryRow("select id from akun where email=? and pass=?", c.GetString("email"),c.GetString("password")).Scan(&i)
+	//log.Println(i)
+	if (i!=0){
+		// Check if user is logged in
+		session := c.StartSession()
+		userID := session.Get("userID")
+		if userID != nil {
+		// User is logged in already, display another page
+			c.TplName ="home.tpl"
 		}
+
+		// Do input checks
+
+		// Set the UserID if everything is ok
+		session.Set("userID",i)
+		//userID = session.Get(c.GetString("email"))
+		//log.Println(userID)
+		c.Redirect("/home",302)
+	} else {
+		c.Redirect("/login",302)
+	}
 	
 }
 
@@ -148,7 +281,7 @@ func (c *LaptopController) Get() {
 	l:=models.Tlaptop{}
 	dlaptop:=models.Dlaptop{}
 
-	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola")
+	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
 	if err != nil {
 		log.Fatal(err)
 	}
