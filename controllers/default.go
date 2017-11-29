@@ -7,6 +7,7 @@ import (
 _ "github.com/go-sql-driver/mysql"
 "database/sql"
 "time"
+"fmt"
 )
 
 type MainController struct {
@@ -53,7 +54,7 @@ type CartController struct {
 	beego.Controller
 }
 
-type InvController struct {
+type BayarController struct {
 	beego.Controller
 }
 
@@ -61,12 +62,83 @@ func (c *MainController) Get() {
 	c.TplName = "index.tpl"
 }
 
-func (c *InvController) Get() {
-	c.TplName = "invoice.tpl"
-}
-
 func (c *FAQController) Get() {
 	c.TplName = "faq.tpl"
+}
+
+func (c *BayarController) Get() {
+	session := c.StartSession()
+	userID := session.Get("userID")
+	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	ca:=models.Tcart{}
+	tc:=models.Dcart{}
+	
+	rows, err:=db.Query("select katalog.merk,katalog.tipe,form.qty,form.harga,beli.garansi,beli.status from beli join form on form.ID=beli.ID_form and form.ID_user=? join katalog on katalog.id=form.ID_barang",userID)
+
+	if err !=nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next(){
+		err:=rows.Scan(&ca.Merk,&ca.Tipe,&ca.Qty,&ca.Harga,&ca.Garansi,&ca.Status)
+		if err !=nil {
+			log.Fatal(err)
+		}
+		if (ca.Status=="pembayaran") {
+			tc=append(tc,ca)
+		}
+	}
+	if err!=nil{
+		log.Fatal(err)
+	}
+	err=rows.Err()
+
+	c.Data["json"]=&tc
+
+	c.TplName = "bayar.tpl"
+}
+
+func (c *BayarController) Post() {
+	session := c.StartSession()
+	userID := session.Get("userID")
+	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var i int
+	err = db.QueryRow("select ID from beli where beli.ID_form=(SELECT ID from form where ID_user=?)",userID).Scan(&i)
+
+	stmt, err := db.Prepare("update beli set status=? where ID=? and status=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec("verifikasi",i,"pembayaran")
+	if err != nil {
+
+		log.Fatal(err)
+	}
+
+	file, header, err := c.GetFile("file") // where <<this>> is the controller and <<file>> the id of your form field
+	if file != nil {
+        // get the filename
+		fileName := header.Filename
+		log.Println(fileName)
+        // save to server
+		c.SaveToFile("file", "C:/Go/project/src/lasti/"+fmt.Sprint(i)+"_"+fmt.Sprint(userID)+"_"+fmt.Sprint(fileName))
+	} else {
+		c.Redirect("/cart",302)
+	}
+
+	c.TplName = "berhasil.tpl"
 }
 
 func (c *FormController) Prepare() {
@@ -250,6 +322,31 @@ func (c *CartController) Get() {
 
 	c.Data["json"]=&tc
 	c.TplName = "cart.tpl"
+}
+
+func (c *CartController) Post() {
+	session := c.StartSession()
+	userID := session.Get("userID")
+	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare("INSERT ticket SET ID_beli=?,status=?,deskripsi=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	var i int
+	err = db.QueryRow("select ID from beli where beli.ID_form=(SELECT ID from form where ID_user=?)",userID).Scan(&i)
+
+	_, err = stmt.Exec(i,"request",c.GetString("ticket"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.TplName = "berhasil.tpl"
 }
 
 func (c *ChatController) Get() {

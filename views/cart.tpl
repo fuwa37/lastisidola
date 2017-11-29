@@ -3,19 +3,20 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<style>
-	.dropdown-submenu {
-		position: relative;
-	}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <title>SIDOLA COMPUTER CENTER</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+  .dropdown-submenu {
+    position: relative;
+  }
 
-	.dropdown-submenu .dropdown-menu {
-		top: 0;
-		left: 100%;
-		margin-top: -1px;
-	}
+  .dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+  }
   table, th, td 
   {
     margin:10px 0;
@@ -43,8 +44,17 @@
 
   <table id="excelDataTable" border="1">
   </table>
-
-  <script>
+  <a href="/bayar"><h5>Pembayaran</h5></a>
+  <font color="blue"><h4>Request for ticket</h4></font>
+  <form method="post" action="" id="reqticket">
+    <div class="form-group">
+      <label for="ticket">Deskripsi</label>
+      <textarea type="ticket" name="ticket" class="form-control" id="ticket" placeholder=""></textarea>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+  <script>  
+   
     var myList = {{.json}}
 
     function buildHtmlTable(selector) {
