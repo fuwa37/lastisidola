@@ -18,3 +18,14 @@ type Tlaptop struct {
 }
 
 type Dlaptop []Tlaptop
+
+type Tcart struct{
+	Merk string `json:"Merk"`
+	Tipe string `json:"Tipe"`
+	Qty int `json:"QTY"`
+	Harga int `json:"Harga"`
+	Garansi string `json:"Garansi"`
+	Status string `json:"Status"`
+}
+
+type Dcart []Tcart

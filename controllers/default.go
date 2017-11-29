@@ -3,7 +3,6 @@ package controllers
 import (
 "github.com/astaxie/beego"
 "lasti/models"
-"fmt"
 "log"
 _ "github.com/go-sql-driver/mysql"
 "database/sql"
@@ -132,7 +131,7 @@ func (c *FormController) Post() {
 
 		t:=time.Now().Format("2006-01-02 15:04:05")
 		t2:=time.Now().AddDate(0,3,0).Format("2006-01-02 15:04:05")
-		_, err = stmt.Exec("harga",t,userID,"beli")
+		_, err = stmt.Exec("beli",t,userID,"beli")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -218,13 +217,38 @@ func (c *TanyaController) Post() {
 }
 
 func (c *CartController) Get() {
+	session := c.StartSession()
+	userID := session.Get("userID")
 	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
 	
-	rows, err:=db.Query("select id, merk, tipe, deskripsi, gambar from katalog where jenis='Laptop'")
+
+	ca:=models.Tcart{}
+	tc:=models.Dcart{}
+	
+	rows, err:=db.Query("select katalog.merk,katalog.tipe,form.qty,form.harga,beli.garansi,beli.status from beli join form on form.ID=beli.ID_form and form.ID_user=? join katalog on katalog.id=form.ID_barang",userID)
+
+	if err !=nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next(){
+		err:=rows.Scan(&ca.Merk,&ca.Tipe,&ca.Qty,&ca.Harga,&ca.Garansi,&ca.Status)
+		if err !=nil {
+			log.Fatal(err)
+		}
+		tc=append(tc,ca)
+	}
+	if err!=nil{
+		log.Fatal(err)
+	}
+	err=rows.Err()
+
+	c.Data["json"]=&tc
 	c.TplName = "cart.tpl"
 }
 
@@ -339,7 +363,7 @@ func (c *LaptopController) Get() {
 		log.Fatal(err)
 	}
 	err=rows.Err()
-	fmt.Println(l.Tipe)
+	//fmt.Println(l.Tipe)
 	c.Data["json"]=&dlaptop
 	//c.ServeJSON()
 	c.TplName = "laptop.tpl"
