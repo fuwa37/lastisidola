@@ -6,7 +6,6 @@ import (
 "fmt"
 "log"
 _ "github.com/go-sql-driver/mysql"
-//"github.com/astaxie/beego/session"
 "database/sql"
 "time"
 )
@@ -75,9 +74,9 @@ func (c *FormController) Prepare() {
 	session := c.StartSession()
 	userID := session.Get("userID")
 	if userID != nil {
-		} else {
-			c.Redirect("/login",302)
-		}
+	} else {
+		c.Redirect("/login",302)
+	}
 }
 
 func (c *FormController) Get() {
@@ -85,10 +84,10 @@ func (c *FormController) Get() {
 		id string
 		qty int
 		sum int
-		t time.Time
 		)
 	session := c.StartSession()
 	userID := session.Get("userID")
+	log.Println(userID)
 	if userID != nil {
 		// User is logged in already, display another page
 		db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
@@ -98,7 +97,7 @@ func (c *FormController) Get() {
 		defer db.Close()
 
 	//log.Println(userID)
-		err = db.QueryRow("select ID_barang,qty,harga,tgl_klr from form where ID_user=? and status=?", userID,"harga").Scan(&id,&qty,&sum,&t)
+		err = db.QueryRow("select ID_barang,qty,harga from form where ID_user=? and status=?", userID,"harga").Scan(&id,&qty,&sum)
 
 	//log.Println(id)
 		c.Data["ID"]=&id
@@ -110,6 +109,12 @@ func (c *FormController) Get() {
 }
 
 func (c *FormController) Post() {
+	var (
+		id int
+		idb string
+		qty int
+		sum int
+		)
 	session := c.StartSession()
 	userID := session.Get("userID")
 	if userID != nil {
@@ -119,18 +124,41 @@ func (c *FormController) Post() {
 		}
 		defer db.Close()
 
-		stmt, err := db.Prepare("update form set status=? where ID_user=? and status<>?")
+		stmt, err := db.Prepare("update form set status=?, tgl_klr=? where ID_user=? and status<>?")
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec("beli",userID,"beli")
+		t:=time.Now().Format("2006-01-02 15:04:05")
+		t2:=time.Now().AddDate(0,3,0).Format("2006-01-02 15:04:05")
+		_, err = stmt.Exec("harga",t,userID,"beli")
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		c.TplName = "berhasil.tpl"
+		err = db.QueryRow("select ID, ID_barang, qty,harga from form where ID_user=?", userID).Scan(&id,&idb,&qty,&sum)
+		c.Data["qty"]=&qty
+		c.Data["id"]=&idb
+		c.Data["sum"]=&sum
+		i:=float32(sum)/float32(qty)
+		c.Data["data"]=&i
+
+		stmt, err = db.Prepare("INSERT beli set ID_form=?, garansi=?, status=?")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt.Close()
+
+		log.Println(t)
+		_, err = stmt.Exec(id,t2,"pembayaran")
+		if err != nil {
+
+			log.Fatal(err)
+		}
+
+		c.Layout = "berhasilbeli.tpl"
+		c.TplName = "invoice.tpl"
 		// User is logged in already, display another page
 		
 	}
@@ -140,9 +168,9 @@ func (c *TanyaController) Prepare() {
 	session := c.StartSession()
 	userID := session.Get("userID")
 	if userID != nil {
-		} else {
-			c.Redirect("/login",302)
-		}
+	} else {
+		c.Redirect("/login",302)
+	}
 }
 
 func (c *TanyaController) Get() {
@@ -190,6 +218,13 @@ func (c *TanyaController) Post() {
 }
 
 func (c *CartController) Get() {
+	db, err:=sql.Open("mysql","root:@tcp(127.0.0.1:3306)/sidola?charset=utf8&parseTime=True")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	
+	rows, err:=db.Query("select id, merk, tipe, deskripsi, gambar from katalog where jenis='Laptop'")
 	c.TplName = "cart.tpl"
 }
 

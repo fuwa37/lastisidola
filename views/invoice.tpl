@@ -14,12 +14,10 @@
 <![endif]-->
 </head>
 <body>
-<nav class="navigation">
-
-	<ul>
-		<a href="home"><span>Home</span></a>
-	</ul>
-
-</nav>
+<img src="https://id.content.jobsdbcdn.com/Content/CmsContent/Logo/ID/JobsDBFiles/CompanyLogo/logo-x/10070x.jpg" alt="Gambar"/>
+<h3>SIDOLA COMPUTER CENTER</h3>
+	<p><h3>{{.id}}</h3></p>
+	<p><h4>{{.qty}} x Rp. {{.data}} / buah</h4></p>
+	<p><h3>Total : Rp. {{.sum}}</h3></p>
 </body>
 </html>
