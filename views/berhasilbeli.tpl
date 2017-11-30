@@ -22,7 +22,7 @@
 
 	</nav>
 	<h3>Sukses!</h3>
-	<div id="element-to-print"><iframe id="invoice" width="600" height="400"></iframe></div>
+	<div><iframe id="invoice" width="600" height="400"></iframe></div>
 	<button onclick="downloadCurrentDocument()">Download Invoice(HTML)</button>
 </body>
 <script type="text/javascript">

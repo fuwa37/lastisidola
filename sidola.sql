@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 29 Nov 2017 pada 04.56
+-- Generation Time: 30 Nov 2017 pada 05.05
 -- Versi Server: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -33,6 +33,7 @@ CREATE TABLE `akun` (
   `user` varchar(16) NOT NULL,
   `email` varchar(32) NOT NULL,
   `tlp` varchar(16) NOT NULL,
+  `alamat` text NOT NULL,
   `pass` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -40,9 +41,10 @@ CREATE TABLE `akun` (
 -- Dumping data untuk tabel `akun`
 --
 
-INSERT INTO `akun` (`id`, `user`, `email`, `tlp`, `pass`) VALUES
-(2, 'fuwa', 'fuwa@fuwa.com', '', 'fuwa123'),
-(3, 'jkakjf', '22a@fuwa.com', '12739123', 'fuwa123');
+INSERT INTO `akun` (`id`, `user`, `email`, `tlp`, `alamat`, `pass`) VALUES
+(4, 'fuwa', 'fuwa@fuwa.com', '09309', '2323', 'fuwa123'),
+(5, 'sjdvb', 'dbadbb@jnfjnjf.sdknk', '2342384', 'jwnfjkwef', '12345'),
+(6, 'aaaaa', 'aaa@aaa.com', '08111', 'bbbbb', '12345');
 
 -- --------------------------------------------------------
 
@@ -54,8 +56,19 @@ CREATE TABLE `beli` (
   `ID` int(11) NOT NULL,
   `ID_form` int(11) NOT NULL,
   `garansi` date NOT NULL,
+  `cara` varchar(16) NOT NULL,
   `status` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `beli`
+--
+
+INSERT INTO `beli` (`ID`, `ID_form`, `garansi`, `cara`, `status`) VALUES
+(3, 6, '2018-03-02', '', 'pembayaran'),
+(4, 7, '2018-03-02', '', 'pembayaran'),
+(5, 7, '2018-03-02', '', 'pembayaran'),
+(6, 6, '2018-03-02', '', 'pembayaran');
 
 -- --------------------------------------------------------
 
@@ -79,8 +92,9 @@ CREATE TABLE `form` (
 --
 
 INSERT INTO `form` (`ID`, `ID_barang`, `ID_user`, `qty`, `harga`, `tgl_msk`, `tgl_klr`, `status`) VALUES
-(3, 'acr-1', 2, 12, 450000, '2017-11-28 13:43:01', '2017-11-28 13:43:01', 'harga'),
-(4, 'acr-1', 3, 32, 10401000, '2017-11-29 03:48:24', '2017-11-29 03:48:24', 'harga');
+(6, 'acr-2', 5, 20, 20000000, '2017-11-30 00:26:26', '2017-11-30 00:26:26', 'beli'),
+(7, 'lnv-1', 6, 30, 21000000, '2017-11-30 01:12:22', '2017-11-30 00:29:02', 'harga'),
+(8, 'acr-1', 6, 12, 888888, '2017-11-30 00:32:56', '2017-11-30 00:32:56', 'beli');
 
 -- --------------------------------------------------------
 
@@ -107,6 +121,26 @@ INSERT INTO `katalog` (`id`, `jenis`, `merk`, `tipe`, `deskripsi`, `gambar`) VAL
 ('lnv-1', 'Laptop', 'Lenovo', 'Thinkpad X100e', 'AMD Athlon MV40; 11,6\" HD 1366 x 768 AntiGlare; 320 GB HDD 5400rpm; 2 GB PC3-5300 667MHz DDR2; ATI Radeon HD 3200 graphics; Realtek 802.11 bgn 1 x 2 (Wireless LAN); Trackpoint, Touchpad; Bluetooth, Camera, 4 in 1 Card Reader; No WWAN, USB Power, Windows 7 Professional 32; 6 cell 2.6 Ah/Up to 5hours; One Year Warranty part and labour; INCLUDED with Multiburner', ''),
 ('lnv-2', 'Laptop', 'Lenovo', 'ThinkPad T400s', 'Intel® Core 2 Duo Processor SP9600 (2.53 GHz, 6MB L2, 1066 MHz FSB); 14.1 \" WXGA + LED; 250GB HDD 5400rpm, 2GB PC3-8500 DDR3 1066MHz (up to 8GB); Intel Graphics Media Accelerator 4500MHD; Intel Wireless Wi-Fi Link 5100 (AGN), Bluetooth; Gigabit Ethernet, Fingerprint Reader, Camera, Trackpoint; DVD Recordable; 6 cell Li-Ion/Up to 5hours; Windows 7 Professional, Three years parts and labour', ''),
 ('lnv-3', 'Laptop', 'Lenovo', 'ThinkPad X301', 'Intel SU9400 (1.4GHz, 800MHz, 3MB); 13.3\" 1440 x 900; 2GB PC3-8500 1066MHz DDR3; 64 Solid State Drive; Intel 4500 MHD; Intel Wireless Wi-Fi Link 5100 (AGN); Bluetooth, Ultranav, Secure Chip; Finger Print, Camera, DVD Recordable; Win Vista Business, Three years parts and labour; FREE UPGRADE TO WINDOWS 7 PROFESSIONAL', '');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `ticket`
+--
+
+CREATE TABLE `ticket` (
+  `ID` int(11) NOT NULL,
+  `ID_beli` int(11) NOT NULL,
+  `status` varchar(32) NOT NULL,
+  `deskripsi` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `ticket`
+--
+
+INSERT INTO `ticket` (`ID`, `ID_beli`, `status`, `deskripsi`) VALUES
+(2, 0, 'request', 'jsndjanskjafef');
 
 --
 -- Indexes for dumped tables
@@ -140,6 +174,12 @@ ALTER TABLE `katalog`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `ticket`
+--
+ALTER TABLE `ticket`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -147,19 +187,25 @@ ALTER TABLE `katalog`
 -- AUTO_INCREMENT for table `akun`
 --
 ALTER TABLE `akun`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `beli`
 --
 ALTER TABLE `beli`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `form`
 --
 ALTER TABLE `form`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `ticket`
+--
+ALTER TABLE `ticket`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
