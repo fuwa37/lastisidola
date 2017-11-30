@@ -30,6 +30,10 @@ type LoginController struct {
 	beego.Controller
 }
 
+type LogoutController struct {
+	beego.Controller
+}
+
 type ChatController struct {
 	beego.Controller
 }
@@ -64,6 +68,11 @@ func (c *MainController) Get() {
 
 func (c *FAQController) Get() {
 	c.TplName = "faq.tpl"
+}
+
+func (c *LogoutController) Get() {
+	c.DestroySession()
+	c.Redirect("/index",302)
 }
 
 func (c *BayarController) Get() {
@@ -115,13 +124,13 @@ func (c *BayarController) Post() {
 	var i int
 	err = db.QueryRow("select ID from beli where beli.ID_form=(SELECT ID from form where ID_user=?)",userID).Scan(&i)
 
-	stmt, err := db.Prepare("update beli set status=? where ID=? and status=?")
+	stmt, err := db.Prepare("update beli set cara=?, status=? where ID=? and status=?")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec("verifikasi",i,"pembayaran")
+	_, err = stmt.Exec(c.GetString("cara"),"verifikasi",i,"pembayaran")
 	if err != nil {
 
 		log.Fatal(err)
@@ -377,18 +386,18 @@ func (c *RegController) Post () {
 	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("INSERT akun SET user=?,email=?,tlp=?,pass=?")
+	stmt, err := db.Prepare("INSERT akun SET user=?,email=?,tlp=?,alamat=?,pass=?")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(c.GetString("name"),c.GetString("email"),c.GetString("telepon"), c.GetString("password"))
+	_, err = stmt.Exec(c.GetString("name"),c.GetString("email"),c.GetString("telepon"),c.GetString("alamat"), c.GetString("password"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	c.Redirect("/home",302)
+	c.Redirect("/login",302)
 }
 
 func (c *LoginController) Get () {

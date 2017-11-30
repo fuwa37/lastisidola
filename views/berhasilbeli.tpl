@@ -39,7 +39,7 @@
 		a = document.createElement('a'),
 		e = new MouseEvent('click');
 
-		a.download = 'doc.html';
+		a.download = 'invoice.html';
 		a.href = 'data:text/html;base64,' + base64doc;
 		a.dispatchEvent(e);
 	}

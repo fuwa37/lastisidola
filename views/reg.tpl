@@ -33,6 +33,10 @@
     <input type="telepon" id="telepon" name="telepon" value="" placeholder="" required="required" />
   </div>
   <div>
+    <label for="alamat">Alamat: <span class="required">*</span> </label>
+    <input type="alamat" id="alamat" name="alamat" value="" placeholder="" required="required" />
+  </div>
+  <div>
     <label for="password">Password: <span class="required">*</span> </label>
     <input type="password" id="password" name="password" value="" placeholder="" required="required" />
   </div>

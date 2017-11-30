@@ -47,6 +47,8 @@
 	<h5>Submit Pembayaran</h5>
 	<form id="uploadfile" enctype="multipart/form-data" method="post" action="">
 		<input id="file" name="file" type="file" accept="image/*">
+		<label for="cara">Ambil/Antar: <span class="required">*</span> </label>
+		<input type="cara" id="cara" name="cara" value="" placeholder="" required="required" />
 		<button type="submit" class="btn btn-default">Submit</button>
 	</form>
 </form>

@@ -18,4 +18,5 @@ func init() {
 	beego.Router("/cart", &controllers.CartController{})
 	beego.Router("/laptop", &controllers.LaptopController{})
 	beego.Router("/bayar", &controllers.BayarController{})
+	beego.Router("/logout", &controllers.LogoutController{})
 }

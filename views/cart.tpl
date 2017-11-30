@@ -49,6 +49,7 @@
   <form method="post" action="" id="reqticket">
     <div class="form-group">
       <label for="ticket">Deskripsi</label>
+      <p>*Masukkan apakah barang mau dijemput atau dibawa ke service center</p>
       <textarea type="ticket" name="ticket" class="form-control" id="ticket" placeholder=""></textarea>
     </div>
     <button type="submit" class="btn btn-default">Submit</button>

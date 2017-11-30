@@ -1,5 +1,9 @@
 package models
 
+import (
+	"time"
+)
+
 type Tuser struct {
 	Nama string `form:"name"`
 	Email string `form:"email"`
@@ -24,7 +28,7 @@ type Tcart struct{
 	Tipe string `json:"Tipe"`
 	Qty int `json:"QTY"`
 	Harga int `json:"Harga"`
-	Garansi string `json:"Garansi"`
+	Garansi time.Time `json:"Garansi"`
 	Status string `json:"Status"`
 }
 

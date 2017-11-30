@@ -18,6 +18,7 @@
 
   <ul>
 		<a href="home"><span>Home</span></a>
+		<a href="logout"><span>Logout</span></a>
 	</ul>
 <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
   <div class="btn-group" role="group">
